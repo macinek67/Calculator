@@ -61,6 +61,7 @@ public class Main {
     public static String wynik = "0";
     public static String wynik1 = "";
     public static String lastCharacter = "";
+    public static String wynikDzialaniaLB1 = "";
     public static float wynikDzialaniaLB = 0.0f;
     public static void licz(JButton b, JLabel lb, JLabel lb1) {
         if(wynik.equals("0")) wynik = "";
@@ -76,9 +77,31 @@ public class Main {
             if(!lb1.getText().equals(""))
                 lastCharacter = lb1.getText().substring(lb1.getText().length()-1);
             else lastCharacter = wynik;
-            if(b.getText().equals("CE")) { wynik="0"; lb.setText(wynik); if(lb1.getText().charAt(lb1.getText().length() - 1) == '=') { wynik1 = ""; lb1.setText(wynik1); } }
+            if(b.getText().equals("CE")) { wynik="0"; lb.setText(wynik); if(lb1.getText().equals("")) return; if(lb1.getText().charAt(lb1.getText().length() - 1) == '=') { wynik1 = ""; lb1.setText(wynik1); } }
             else if(b.getText().equals("←")) { wynik = wynik.substring(0, wynik.length()-1); if(wynik.isEmpty()) wynik="0"; lb.setText(wynik); if(lb.getText().equals("⁃")) { wynik="0"; lb.setText(wynik); } }
             else if(b.getText().equals("C")) { wynik="0"; lb.setText(wynik); wynik1=""; lb1.setText(wynik1); lastCharacter=""; }
+            else if(b.getText().equals("%")) {
+                if(lb1.getText().isEmpty()) { lb1.setText("0"); wynik="0"; return; }
+                String[] liczbaPrc = wynik1.split("[ +\\-÷×]");
+                if(lb1.getText().charAt(lb1.getText().length()-1)=='=') {
+                    //JOptionPane.showMessageDialog(null, "e");
+                    wynik1 = Float.toString(Float.parseFloat(lb.getText())*Float.parseFloat(lb.getText())/100);
+                    lb1.setText(wynik1);
+                    wynik = "0";
+                    lb.setText(wynik1);
+                }
+                //else if(lb1.getText().equals(lb.getText())) {  }
+                else if(!liczbaPrc[0].isEmpty() && lb1.getText().length()>liczbaPrc[0].length()) {
+                    if(liczbaPrc[0].charAt(0)=='⁃') liczbaPrc[0] = "-" + liczbaPrc[0].substring(1, liczbaPrc[0].length());
+                    //JOptionPane.showMessageDialog(null, liczbaPrc[0] + "/" + wynik1);
+                    System.out.println(liczbaPrc[0] + "/" + wynik1);
+                    if(wynik.charAt(0)=='⁃') wynik = "-" + wynik.substring(1, wynik.length());
+                    wynik1 += " " + Float.toString(Float.parseFloat(liczbaPrc[0])*Float.parseFloat(wynik)/100);
+                    lb1.setText(wynik1);
+                    lb.setText(Float.toString(Float.parseFloat(liczbaPrc[0])*Float.parseFloat(wynik)/100));
+                    wynik="0";
+                }
+            }
             else if(b.getText().equals("+/-")) {
                 if(wynik.charAt(0) == '⁃' && !wynik.equals("0")) {
                     wynik = wynik.substring(1, wynik.length());
@@ -89,9 +112,12 @@ public class Main {
                 if(wynik1.isEmpty()) { lb1.setText(lb.getText() + " ="); wynik="0"; return;}
                 String[] liczba = wynik1.split("[ +\\-÷×]");
                 String[] znak = wynik1.split("[\u0001\u0002\u0003\u0004\u0005\u0006\u0007\u0008\u0009\u0000]");
-                String znak1 = znak[0].substring(znak[0].length()-1,znak[0].length());
+                //String znak1 = znak[0].substring(znak[0].length()-1,znak[0].length());
+                String znak1 = znak[0].substring(liczba[0].length()+1, liczba[0].length()+2);
                 String drugaLiczba = lb.getText();
-                String wynikDzialaniaLB1 = liczba[0] + " " + znak1 + " " + drugaLiczba + " =";
+                //JOptionPane.showMessageDialog(null, znak1 + "/" + znak[0].substring(liczba[0].length()+1, liczba[0].length()+2));
+                wynikDzialaniaLB1 = liczba[0] + " " + znak1 + " " + drugaLiczba + " =";
+                //JOptionPane.showMessageDialog(null, wynikDzialaniaLB1);
                 lb1.setText(wynikDzialaniaLB1);
                 if(liczba[0].charAt(0) == '⁃') liczba[0] = "-" + liczba[0].substring(1,liczba[0].length());
                 if(drugaLiczba.charAt(0) == '⁃') drugaLiczba = "-" + drugaLiczba.substring(1,drugaLiczba.length());
@@ -103,14 +129,16 @@ public class Main {
                     if(!drugaLiczba.equals("0")) wynikDzialaniaLB = Float.parseFloat(liczba[0]) / Float.parseFloat(drugaLiczba);
                     else { wynik="0"; lb.setText(wynik); wynik1= liczba[0] + " " + znak1; lb1.setText(wynik1); return; }
                 }
-                else if(znak1.equals("×"))
+                else if(znak1.equals("×") || znak[0].charAt(2)=='×')
                     wynikDzialaniaLB = Float.parseFloat(liczba[0]) * Float.parseFloat(drugaLiczba);
                 wynik = Float.toString(wynikDzialaniaLB);
                 if(wynik.charAt(0) == '-') { wynik = "⁃" + wynik.substring(1,wynik.length());}
                 lb.setText(wynik);
             }
             else if(!lastCharacter.equals("+") && !lastCharacter.equals("-") && !lastCharacter.equals("÷") && !lastCharacter.equals("×") && !lastCharacter.equals("=")){
-                wynik1 += wynik + " " + b.getText();
+                if(lb1.getText().isEmpty())
+                    wynik1 += wynik + " " + b.getText();
+                else wynik1 += " " + b.getText();
                 wynik = "0";
                 lb1.setText(wynik1);
             }
