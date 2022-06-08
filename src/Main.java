@@ -66,7 +66,7 @@ public class Main {
         if(wynik.equals("0")) wynik = "";
         //JOptionPane.showMessageDialog(null, lb.getText().indexOf("cos"));
         if(wynik.length()<=15 && (!b.getText().equals("%") && !b.getText().equals("1/x") && !b.getText().equals("x^2")) && !b.getText().equals("√x") && !b.getText().equals("÷") && !b.getText().equals("×") && !b.getText().equals("-") && !b.getText().equals("+") && !b.getText().equals("=") && !b.getText().equals("CE") && !b.getText().equals("C") && !b.getText().equals("←") && !b.getText().equals("+/-")) {
-            if((b.getText().equals(".") && lb.getText().charAt(lb.getText().length() - 1) == '.') || b.getText().equals(".") && lb.getText().indexOf(".")>=0) return;
+            if((b.getText().equals(".") && lb.getText().charAt(lb.getText().length() - 1) == '.') || b.getText().equals(".") && lb.getText().contains(".")) return;
             else if(b.getText().equals(".") && lb.getText().charAt(lb.getText().length() - 1) == '0') { wynik="0"; lb.setText(wynik);}
             wynik += b.getText();
             lb.setText(wynik);
@@ -100,9 +100,8 @@ public class Main {
                 else if(znak1.equals("-"))
                     wynikDzialaniaLB = Float.parseFloat(liczba[0]) - Float.parseFloat(drugaLiczba);
                 else if(znak1.equals("÷")) {
-                    if(!drugaLiczba.equals("0"))
-                        wynikDzialaniaLB = Float.parseFloat(liczba[0]) / Float.parseFloat(drugaLiczba);
-                    else return;
+                    if(!drugaLiczba.equals("0")) wynikDzialaniaLB = Float.parseFloat(liczba[0]) / Float.parseFloat(drugaLiczba);
+                    else { wynik="0"; lb.setText(wynik); wynik1= liczba[0] + " " + znak1; lb1.setText(wynik1); return; }
                 }
                 else if(znak1.equals("×"))
                     wynikDzialaniaLB = Float.parseFloat(liczba[0]) * Float.parseFloat(drugaLiczba);
