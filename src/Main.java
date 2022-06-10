@@ -81,7 +81,11 @@ public class Main {
             else if(b.getText().equals("C")) { wynik="0"; lb.setText(wynik); wynik1=""; lb1.setText(wynik1); lastCharacter=""; }
             else if(b.getText().equals("%")) {
                 if(lb1.getText().isEmpty()) { wynik1 = "0"; lb1.setText(wynik1); wynik="0"; return; }
-                String[] liczbaPrc = wynik1.split("[ +\\-÷×]");
+                String[] liczbaPrc = new String[1];
+                if(lb1.getText().contains("+")) { liczbaPrc[0] = lb1.getText().substring(0, lb1.getText().indexOf("+")-1); }
+                else if(lb1.getText().contains("-")) { liczbaPrc[0] = lb1.getText().substring(0, lb1.getText().indexOf("-")-1); }
+                else if(lb1.getText().contains("÷")) { liczbaPrc[0] = lb1.getText().substring(0, lb1.getText().indexOf("÷")-1); }
+                else if(lb1.getText().contains("×")) { liczbaPrc[0] = lb1.getText().substring(0, lb1.getText().indexOf("×")-1); }
                 if(lb1.getText().charAt(lb1.getText().length()-1)=='=') {
                     wynik1 = Float.toString(Float.parseFloat(lb.getText())*Float.parseFloat(lb.getText())/100);
                     lb1.setText(wynik1);
@@ -90,10 +94,10 @@ public class Main {
                 }
                 else if(!liczbaPrc[0].isEmpty() && lb1.getText().length()>liczbaPrc[0].length()) {
                     if(liczbaPrc[0].charAt(0)=='⁃') liczbaPrc[0] = "-" + liczbaPrc[0].substring(1, liczbaPrc[0].length());
-                    if(wynik.charAt(0)=='⁃') wynik = "-" + wynik.substring(1, wynik.length());
-                    wynik1 += " " + Float.toString(Float.parseFloat(liczbaPrc[0])*Float.parseFloat(wynik)/100);
+                    if(lb.getText().charAt(0)=='⁃') lb.setText("-" + lb.getText().substring(1, lb.getText().length()));
+                    wynik1 += " " + Float.toString(Float.parseFloat(liczbaPrc[0])*Float.parseFloat(lb.getText())/100);
                     lb1.setText(wynik1);
-                    lb.setText(Float.toString(Float.parseFloat(liczbaPrc[0])*Float.parseFloat(wynik)/100));
+                    lb.setText(Float.toString(Float.parseFloat(liczbaPrc[0])*Float.parseFloat(lb.getText())/100));
                     wynik="0";
                 }
             }
